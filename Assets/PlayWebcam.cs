@@ -12,6 +12,8 @@ public class PlayWebcam : MonoBehaviour {
     Material _material;
     public Text infoText;
     WebCamTexture webcamTexture;
+    public Color activeColor, inactiveColor;
+    public Image activeImage;
 
     void Start () {
 		if(deviceName == "")
@@ -38,9 +40,31 @@ public class PlayWebcam : MonoBehaviour {
 
     private void Update()
     {
+        // infos text
         infoText.text =
             "Device name : " + deviceName + "\n" +
-            "FPS: <TODO>";
+            "FPS: <TODO>" + "\n" +
+            "Size : " + webcamTexture.width + "x" + webcamTexture.height;
+
+        // puce d'activite
+        if(webcamTexture.isPlaying)
+        {
+            activeImage.color = activeColor;
+        }
+        else
+        {
+            activeImage.color = inactiveColor;
+        }
+
+        // input test
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            Texture2D snap = new Texture2D(webcamTexture.width, webcamTexture.height);
+            snap.SetPixels(webcamTexture.GetPixels());
+            snap.Apply();
+
+            System.IO.File.WriteAllBytes("D:/Unity/captures/" + deviceName + ".png", snap.EncodeToPNG());
+        }
     }
 
 }
